@@ -1,5 +1,6 @@
 BomFetcher::Application.routes.draw do
-  get "stations/index"
+  match "stations" => "stations#all"
+  #get "stations/all"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
