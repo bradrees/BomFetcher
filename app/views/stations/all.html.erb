@@ -1,0 +1,21 @@
+<h1>Bureau of Meteorology Radar Stations, Australia</h1>
+<a href="/stations.json">View as JSON</a>
+<ul>
+<% @result.each do |stateObj| %>
+  <li>
+    <%= stateObj.name %>
+    <ul>
+      <% stateObj.locations.each do |locationObj| %>
+      <li>
+        <%= locationObj.name %>
+        <ul>
+          <% locationObj.views.each do |viewObj| %>
+          <li><%= viewObj.code %> - <%= viewObj.name %></li>
+          <% end %>
+        </ul>
+      </li>
+      <% end %>
+    </ul>
+  </li>
+  <% end %>
+</ul>

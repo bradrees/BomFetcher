@@ -31,8 +31,7 @@ class StationsController < ApplicationController
       end
 
       respond_to do |format|
-        format.html # index.html.erb
-        format.xml  { render :xml => @result }
+        format.html # all.html.erb
         format.json { render :json => @result }
       end
     end
