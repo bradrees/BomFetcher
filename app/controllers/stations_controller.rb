@@ -1,11 +1,14 @@
 require 'open-uri'
 require 'nokogiri'
+require 'uri'
 
 class StationsController < ApplicationController
-  caches_page :all
+  caches_action :all
+  caches_action :images, expires_in: 1.minute
+
   def all
       @result = Array.new
-      ["WA", "NSW", "VIC", "QLD", "NT", "TAS", "SA" ].sort().each do |state|
+      %w(WA NSW VIC QLD NT TAS SA).sort().each do |state|
         doc = Nokogiri::HTML(open("http://www.bom.gov.au/australia/radar/#{state.downcase}_radar_sites_table.shtml"))
         currentState = State.new
         currentState.name = state
@@ -34,7 +37,34 @@ class StationsController < ApplicationController
         format.html # all.html.erb
         format.json { render :json => @result }
       end
+  end
+
+  def images
+    station = request[:station]
+    @result = RadarImages.new
+    doc = Nokogiri::HTML(open("http://www.bom.gov.au/products/IDR#{station}.loop.shtml"))
+    doc.css('script').each do |script|
+      URI.extract(script.content, %w(http)).each do |uri|
+        if uri.match /radar\/IDR#{Regexp.quote(station)}\.T\.(\d+)\.png/
+            @result.radar_images.push(uri.to_s)
+        end
+      end
+
+      if script.content.match /var type\s*=\s*"(\d)";/
+        @result.legend_image = $1
+      end
+
+      if script.content.match /IDR(\d\d\w)\.observations\.(\d+)\.png/
+        @result.map_station = $1
+        @result.observation_layer = $2
+      end
     end
+
+    respond_to do |format|
+      format.html # images.html.erb
+      format.json { render :json => @result }
+    end
+  end
 end
 
 
@@ -56,4 +86,12 @@ end
 
 class LocationView
   attr_accessor :name, :code
+end
+
+class RadarImages
+  attr_accessor :radar_images, :map_station, :observation_layer, :legend_image
+
+  def initialize
+    @radar_images = Array.new
+  end
 end
