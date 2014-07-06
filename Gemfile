@@ -25,7 +25,7 @@ gem 'nokogiri'
 gem 'memcachier'
 gem 'dalli'
 gem 'newrelic_rpm'
-gem 'pg'
+gem 'mongoid'
 
 group :development, :test do
   gem 'factory_girl_rails'

@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'uri'
 
 class StationsController < ApplicationController
-  caches_action :all, expires_in: Rails.env.production? ? 1.day : 1.second
+  caches_action :all, expires_in: Rails.env.production? ? 1.minute : 1.second   #todo change
   caches_action :images, expires_in: Rails.env.production? ? 1.minute : 1.second
 
   def all
