@@ -13,22 +13,33 @@ class StationsController < ApplicationController
         currentState = State.new
         currentState.name = state
         @result << currentState
+        last_station = nil
         doc.css('table.generic tr').each do |row|
           currentStation = nil
-          row.css('td').each do |cell|
-            anchor = cell.css('a').first
-            content = cell.content.strip
-            if !currentStation and anchor #need a better check here
-              currentStation = Location.new
-              currentStation.name = content
-              currentState.locations << currentStation
-            elsif currentStation and anchor and /IDR(\d\d\w)\./.match(anchor['href'])
-              locationView = LocationView.new
-              locationView.name = content
-              locationView.code = /IDR(\d\d\w)\./.match(anchor['href'])[1] # Get code from url
-              currentStation.views << locationView
-            end
+          catch (:done) do
+            row.css('td').each do |cell|
+              anchor = cell.css('a').first
+              content = cell.content.strip
+              if !currentStation and anchor #need a better check here
+                if /IDR(\d\dA)\./.match(anchor['href'])
+                  currentStation = last_station
+                  next
+                end
 
+                currentStation = Location.new
+                currentStation.name = content
+                currentState.locations << currentStation
+                last_station = currentStation
+                next
+              end
+
+              if currentStation and anchor and /IDR(\d\d\w)\./.match(anchor['href']) #and /(\d\d\d) km/.match(content)
+                locationView = LocationView.new
+                locationView.name = content
+                locationView.code = /IDR(\d\d\w)\./.match(anchor['href'])[1] # Get code from url
+                currentStation.views << locationView
+              end
+            end
           end
         end
       end
