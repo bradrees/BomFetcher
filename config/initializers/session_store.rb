@@ -6,3 +6,5 @@ BomFetcher::Application.config.session_store :cookie_store, key: '_BomFetcher_se
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
 # BomFetcher::Application.config.session_store :active_record_store
+
+ActionController::Base.expire_page '/stations'

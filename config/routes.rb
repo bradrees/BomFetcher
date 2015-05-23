@@ -1,5 +1,6 @@
 BomFetcher::Application.routes.draw do
-  match "stations" => "stations#all"
+  match "/stations", :to => redirect("/stations2")
+  #match "stations" => "stations#all"
   match "stations2" => "stations#all"
   match "images/:station" => "stations#images"
   #get "stations/all"
