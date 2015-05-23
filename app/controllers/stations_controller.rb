@@ -23,14 +23,13 @@ class StationsController < ApplicationController
               if !currentStation and anchor #need a better check here
                 if /IDR(\d\dA)\./.match(anchor['href'])
                   currentStation = last_station
+                else
+                  currentStation = Location.new
+                  currentStation.name = content
+                  currentState.locations << currentStation
+                  last_station = currentStation
                   next
                 end
-
-                currentStation = Location.new
-                currentStation.name = content
-                currentState.locations << currentStation
-                last_station = currentStation
-                next
               end
 
               if currentStation and anchor and /IDR(\d\d\w)\./.match(anchor['href']) #and /(\d\d\d) km/.match(content)
