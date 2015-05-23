@@ -8,3 +8,4 @@ BomFetcher::Application.config.session_store :cookie_store, key: '_BomFetcher_se
 # BomFetcher::Application.config.session_store :active_record_store
 
 ActionController::Base.expire_page '/stations'
+ActionController::Base.expire_page '/stations.json'
